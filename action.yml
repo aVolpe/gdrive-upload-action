@@ -14,6 +14,9 @@ inputs:
   credentials:
     description: 'the service account credentials encoded in base64'
     required: true
+outputs:
+  link:
+    description: A shareable link of the uploaded file
 
 runs:
   using: docker

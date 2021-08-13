@@ -88,10 +88,28 @@ func main() {
 		Name:    name,
 		Parents: []string{folderId},
 	}
-
-	_, err = svc.Files.Create(f).Media(file).Do()
+	githubactions.Warningf(fmt.Sprintf("File to upload: %v", f))
+	uploaded, err := svc.Files.Create(f).Media(file).Do()
+	githubactions.Warningf(fmt.Sprintf("File uploaded: %v", uploaded))
 	if err != nil {
 		githubactions.Fatalf(fmt.Sprintf("creating file: %+v failed with error: %v", f, err))
+	}
+	githubactions.Warningf(fmt.Sprintf("f.WebViewLink: %v", f.WebViewLink))
+	githubactions.Warningf(fmt.Sprintf("f.WebContentLink: %v", f.WebContentLink))
+	githubactions.Warningf(fmt.Sprintf("f.ExportLinks: %v", f.ExportLinks))
+
+	githubactions.Warningf(fmt.Sprintf("uploaded file: %v", uploaded))
+	if uploaded != nil {
+
+		githubactions.Warningf(fmt.Sprintf("uploaded.WebViewLink: %v", uploaded.WebViewLink))
+		githubactions.Warningf(fmt.Sprintf("uploaded.WebContentLink: %v", uploaded.WebContentLink))
+		githubactions.Warningf(fmt.Sprintf("uploaded.ExportLinks: %v", uploaded.ExportLinks))
+		link := fmt.Sprintf("https://drive.google.com/file/d/%s/view?usp=drivesdk", uploaded.Id)
+		githubactions.SetOutput("link", link)
+		githubactions.Warningf(fmt.Sprintf("link: %v", link))
+
+	} else {
+		githubactions.Errorf(fmt.Sprintf("No error uploading file but no file uploaded (?): %v - %v", f, uploaded))
 	}
 
 }
